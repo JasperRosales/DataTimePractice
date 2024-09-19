@@ -5,7 +5,8 @@ public class Main {
         DateFormatter date = new DateFormatter();
         BirthdayManager bday = new BirthdayManager();
 
-       date.setInput("24/12/2005").printOutput();
+        bday.setBday("Jasper", "04/26/2005");
+        bday.getAllBirthdays();
 
         date.getAlldates();
     }
