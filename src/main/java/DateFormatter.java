@@ -1,28 +1,35 @@
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class DateFormatter{
-    private LocalDateTime output;
+    private LocalDate output;
     private String input;
-    private List<LocalDate> BirthdayList = new ArrayList<>();
+    private List<LocalDate> listOfDates = new ArrayList<>();
+    private ZonedDateTime ztime;
 
     DateFormatter(){}
 
+    //Date Formats
+    DateTimeFormatter[] formatters = {
+            DateTimeFormatter.ofPattern("MM/dd/yyyy"),
+            DateTimeFormatter.ofPattern("dd-MM-yyyy"),
+            DateTimeFormatter.ofPattern("MM-dd-yyyy"),
+            DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+            DateTimeFormatter.ofPattern("yyyy/dd/MM"),
+    };
+
+    //Parse a String into a Local Date Format
     public DateFormatter setInput(String Input) {
         this.input = Input;
 
 
         try{
             DateTimeFormatter formatString = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            this.output = LocalDateTime.parse(input, formatString);
+            this.output = LocalDate.parse(input, formatString);
 
         }catch (Exception e){
             System.out.println("Invalid Format:" + e.getMessage());
@@ -30,37 +37,22 @@ public class DateFormatter{
         return this;
     }
 
-    public void getDateNow(){
-        System.out.println(LocalDate.now());
+    //Get all the list of Dates stored in the array
+    public void getAlldates(){
+        DateTimeFormatter dateformat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        for(LocalDate i : listOfDates){
+            System.out.println(i.format(dateformat));
+        }
     }
-
-    public void getTimeNow(){
-        System.out.println(LocalTime.now());
-    }
-
-    public void setBirthday(String bday){
-        DateTimeFormatter[] formatters = {
-                DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-                DateTimeFormatter.ofPattern("dd-MM-yyyy"),
-                DateTimeFormatter.ofPattern("yyyy/dd/MM"),
-
-                new DateTimeFormatterBuilder()
-                        .append(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-                        .parseDefaulting(ChronoField.YEAR,2000)
-                        .toFormatter(),
-                new DateTimeFormatterBuilder()
-                        .append(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
-                        .parseDefaulting(ChronoField.YEAR, 2000)
-                        .toFormatter()
-
-        };
-
+    //set a date on the list using certain formats
+    public LocalDate addDate(String date){
+        LocalDate result = null;
         boolean parsed = false;
 
         for(DateTimeFormatter format : formatters){
             try{
-                LocalDate temp = LocalDate.parse(bday, format);
-                BirthdayList.add(temp);
+                result = LocalDate.parse(date, format);
+                listOfDates.add(result);
                 parsed = true;
                 break;
             }catch(DateTimeParseException ignored){
@@ -69,19 +61,21 @@ public class DateFormatter{
         }
 
         if(!parsed){
-            System.out.println("Invalid Format: " + bday);
+            System.out.println("Invalid Format: " + date);
         }
+
+        return result;
     }
 
-    public void getAllBirthdays(){
-        DateTimeFormatter bdayFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        for(LocalDate i : BirthdayList){
-            System.out.println(i.format(bdayFormat));
-        }
-    }
-
+    //Allows to chain an input to print the set date
     public DateFormatter printOutput() {
-        System.out.println(output);
+        if(output != null){
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            System.out.println(output.format(dateFormat));
+        }
         return this;
     }
+
 }
+
+
