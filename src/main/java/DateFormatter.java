@@ -10,7 +10,7 @@ import java.util.List;
 public class DateFormatter{
     private LocalDateTime output;
     private String input;
-    private final List<LocalDate> BirthdayList = new ArrayList<>();
+    private List<LocalDate> BirthdayList = new ArrayList<>();
 
     DateFormatter(){}
 
