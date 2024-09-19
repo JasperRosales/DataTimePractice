@@ -2,7 +2,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +41,18 @@ public class DateFormatter{
     public void setBirthday(String bday){
         DateTimeFormatter[] formatters = {
                 DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy"),
                 DateTimeFormatter.ofPattern("yyyy/dd/MM"),
-                DateTimeFormatter.ofPattern("dd-MM-yyyy")
+
+                new DateTimeFormatterBuilder()
+                        .append(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                        .parseDefaulting(ChronoField.YEAR,2000)
+                        .toFormatter(),
+                new DateTimeFormatterBuilder()
+                        .append(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                        .parseDefaulting(ChronoField.YEAR, 2000)
+                        .toFormatter()
+
         };
 
         boolean parsed = false;
@@ -50,6 +61,7 @@ public class DateFormatter{
             try{
                 LocalDate temp = LocalDate.parse(bday, format);
                 BirthdayList.add(temp);
+                parsed = true;
                 break;
             }catch(DateTimeParseException ignored){
 
@@ -62,8 +74,9 @@ public class DateFormatter{
     }
 
     public void getAllBirthdays(){
+        DateTimeFormatter bdayFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         for(LocalDate i : BirthdayList){
-            System.out.println(i);
+            System.out.println(i.format(bdayFormat));
         }
     }
 
